@@ -1,11 +1,15 @@
 import { useEffect, useRef, useState } from "preact/hooks";
 import { Room } from "../utils/types.ts";
 
-export default function PokerGame({ roomState }: { roomState: Room }) {
+export default function PokerGame(
+  { initialRoom, isAdmin = false }: { initialRoom: Room; isAdmin?: boolean },
+) {
   const socketRef = useRef<WebSocket | null>(null);
   const formRef = useRef<HTMLFormElement>(null);
 
-  const [room, setRoom] = useState<Room>(roomState);
+  const [room, setRoom] = useState<Room>(initialRoom);
+
+  const isEstimating = room.state === "estimating";
 
   useEffect(() => {
     const wsOrigin = origin.replace("http", "ws");
@@ -34,6 +38,10 @@ export default function PokerGame({ roomState }: { roomState: Room }) {
     socketRef.current?.send(JSON.stringify({ type: "estimate", estimate }));
   };
 
+  const handleToggleState = () => {
+    socketRef.current?.send(JSON.stringify({ type: "toggleState" }));
+  };
+
   return (
     <div>
       Room #{room.id}
@@ -42,7 +50,11 @@ export default function PokerGame({ roomState }: { roomState: Room }) {
           <>
             <ul>
               {room.users.map((user) => (
-                <li>{user.name}{user.estimate && ` (${user.estimate})`}</li>
+                <li>
+                  {user.name}
+                  {user.estimate &&
+                    `(${isEstimating ? "ready" : user.estimate})`}
+                </li>
               ))}
             </ul>
           </>
@@ -52,8 +64,18 @@ export default function PokerGame({ roomState }: { roomState: Room }) {
         <label>
           Estimate: <input type="number" name="estimate" />
         </label>
-        <button type="submit">Send</button>
+        {isEstimating && (
+          <button type="submit">
+            Send
+          </button>
+        )}
       </form>
+
+      {isAdmin && (
+        <button onClick={handleToggleState}>
+          {isEstimating ? "Reveal" : "Reset"}
+        </button>
+      )}
     </div>
   );
 }

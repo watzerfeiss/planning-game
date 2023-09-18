@@ -1,5 +1,9 @@
 import { Handlers } from "$fresh/server.ts";
-import { getRoomById, submitEstimate } from "../../controllers/room.ts";
+import {
+  getRoomById,
+  submitEstimate,
+  toggleState,
+} from "../../controllers/room.ts";
 import { getUserByToken } from "../../utils/db.ts";
 import { CtxState, SyncMessage, UserMessage } from "../../utils/types.ts";
 
@@ -30,7 +34,7 @@ export const handler: Handlers<never, CtxState> = {
 
     const userToken = ctx.state.userToken;
     const user = userToken ? await getUserByToken({ token: userToken }) : null;
-    if (!user) {
+    if (!userToken || !user) {
       return new Response("Authorization required", { status: 401 });
     }
 
@@ -57,8 +61,9 @@ export const handler: Handlers<never, CtxState> = {
         submitEstimate({ roomId, userId: user.id, estimate: message.estimate });
       }
 
-      // if (message.type === "toggleState") {
-      // }
+      if (message.type === "toggleState") {
+        toggleState({ roomId, userToken });
+      }
     });
 
     socket?.addEventListener("close", () => {

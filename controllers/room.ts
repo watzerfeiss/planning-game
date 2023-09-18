@@ -1,4 +1,9 @@
-import { getRoomDataById, getUsersByIds, setRoomData } from "../utils/db.ts";
+import {
+  getRoomDataById,
+  getUserByToken,
+  getUsersByIds,
+  setRoomData,
+} from "../utils/db.ts";
 import { Room, RoomData } from "../utils/types.ts";
 
 async function adaptRoom(roomData: RoomData) {
@@ -55,5 +60,28 @@ export async function submitEstimate(
 
   const estimates = { ...room.estimates, [userId]: estimate };
   const updated = await setRoomData({ ...room, estimates });
+  return updated;
+}
+
+export async function toggleState(
+  { roomId, userToken }: { roomId: string; userToken: string },
+) {
+  const [room, user] = await Promise.all([
+    getRoomDataById({ roomId }),
+    getUserByToken({ token: userToken }),
+  ]);
+
+  if (
+    !room || !user ||
+    room?.adminId !== user?.id
+  ) {
+    return false;
+  }
+
+  const updated = await setRoomData({
+    ...room,
+    state: room.state === "estimating" ? "viewing" : "estimating",
+  });
+
   return updated;
 }
