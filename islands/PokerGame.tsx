@@ -42,8 +42,8 @@ export default function PokerGame(
     socketRef.current?.send(JSON.stringify({ type: "estimate", estimate }));
   };
 
-  const handleToggleState = () => {
-    socketRef.current?.send(JSON.stringify({ type: "toggleState" }));
+  const handleToggleMode = () => {
+    socketRef.current?.send(JSON.stringify({ type: "toggle" }));
   };
 
   return (
@@ -76,7 +76,7 @@ export default function PokerGame(
       </form>
 
       {isAdmin && (
-        <button onClick={handleToggleState}>
+        <button onClick={handleToggleMode}>
           {roomIsHidden ? "Reveal" : "Reset"}
         </button>
       )}
