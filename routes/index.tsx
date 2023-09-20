@@ -1,5 +1,5 @@
 import { HandlerContext, PageProps } from "$fresh/server.ts";
-import { getUserByToken } from "../utils//db.ts";
+import { getUserByToken } from "../utils/db.ts";
 import { CtxState, User } from "../utils/types.ts";
 
 interface PageData {
@@ -15,7 +15,7 @@ export async function handler(
     return ctx.render(null);
   }
 
-  const user = await getUserByToken({ token: userToken });
+  const user = await getUserByToken({ userToken });
   return ctx.render({ user });
 }
 

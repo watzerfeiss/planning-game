@@ -1,87 +1,114 @@
-import {
-  getRoomDataById,
-  getUserByToken,
-  getUsersByIds,
-  setRoomData,
-} from "../utils/db.ts";
-import { Room, RoomData } from "../utils/types.ts";
+import { customAlphabet } from "https://deno.land/x/nanoid@v3.0.0/mod.ts";
+import { setRoom } from "../utils/db.ts";
+import { RoomState, User } from "../utils/types.ts";
+import { sendRoomUpdate } from "../utils/sync.ts";
 
-async function adaptRoom(roomData: RoomData) {
-  const users = await getUsersByIds({ userIds: roomData.userIds });
+const createRoomId = customAlphabet("0123456789ABCDEF", 8);
 
-  const room: Room = {
-    id: roomData.id,
-    adminId: roomData.adminId,
-    users: users.map((u) => ({ ...u, estimate: roomData.estimates[u.id] })),
-    state: roomData.state,
+// authoritative room states
+// created by users connected to this instance
+const rooms: Map<string, RoomState> = new Map();
+
+// get the authoritative room state if this instance owns this room
+export function getOwnedRoom({ roomId }: { roomId: string }) {
+  console.log([...rooms]);
+  return rooms.get(roomId) || null;
+}
+
+export async function createRoom({ adminUser }: { adminUser: User }) {
+  const room: RoomState = {
+    id: createRoomId(),
+    adminId: adminUser.id,
+    members: [adminUser],
+    mode: "hidden",
   };
+
+  rooms.set(room.id, room);
+  const ok = await setRoom({ id: room.id, adminId: adminUser.id });
+  return ok ? room : null;
+}
+
+export function addMember(
+  { user, roomId }: { user: User; roomId: string },
+) {
+  const room = rooms.get(roomId);
+  if (!room) {
+    return null;
+  }
+
+  const members = room.members;
+
+  if (!members.find((m) => m.id === user.id)) {
+    members.push(user);
+    sendRoomUpdate(room);
+  }
 
   return room;
 }
 
-export async function getRoomById({ roomId }: { roomId: string }) {
-  const roomData = await getRoomDataById({ roomId });
-  if (!roomData) {
-    return null;
-  }
-
-  return adaptRoom(roomData);
-}
-
-export async function addUser(
+// TODO remove member
+export function removeMember(
   { userId, roomId }: { userId: string; roomId: string },
 ) {
-  const roomData = await getRoomDataById({ roomId });
-  if (!roomData) {
+  const room = rooms.get(roomId);
+  if (!room) {
     return null;
   }
 
-  const userIds = roomData.userIds;
-  if (!userIds.includes(userId)) {
-    userIds.push(userId);
-  }
+  const updatedRoom: RoomState = {
+    ...room,
+    members: room.members.filter((m) => m.id !== userId),
+  };
 
-  const added = await setRoomData({ ...roomData, userIds });
-
-  return adaptRoom(added ? { ...roomData, userIds } : roomData);
+  rooms.set(roomId, updatedRoom);
+  sendRoomUpdate(updatedRoom);
+  return updatedRoom;
 }
 
-export async function submitEstimate(
+export function submitEstimate(
   { userId, roomId, estimate }: {
     userId: string;
     roomId: string;
     estimate: number;
   },
 ) {
-  const room = await getRoomDataById({ roomId });
-  if (!room || !room.userIds.includes(userId)) {
-    return false;
+  const room = rooms.get(roomId);
+  if (!room) {
+    return null;
   }
 
-  const estimates = { ...room.estimates, [userId]: estimate };
-  const updated = await setRoomData({ ...room, estimates });
-  return updated;
+  if (room?.mode === "revealed") {
+    return room;
+  }
+
+  const updatedRoom = {
+    ...room,
+    members: room?.members.map((m) => m.id === userId ? { ...m, estimate } : m),
+  };
+
+  rooms.set(room.id, updatedRoom);
+  sendRoomUpdate(updatedRoom);
+  return updatedRoom;
 }
 
-export async function toggleState(
-  { roomId, userToken }: { roomId: string; userToken: string },
+export function toggleRoom(
+  { roomId, userId }: { roomId: string; userId: string },
 ) {
-  const [room, user] = await Promise.all([
-    getRoomDataById({ roomId }),
-    getUserByToken({ token: userToken }),
-  ]);
+  const room = rooms.get(roomId);
 
-  if (
-    !room || !user ||
-    room?.adminId !== user?.id
-  ) {
-    return false;
+  if (!room || room.adminId !== userId) {
+    return null;
   }
 
-  const updated = await setRoomData({
+  const updatedRoom: RoomState = {
     ...room,
-    state: room.state === "estimating" ? "viewing" : "estimating",
-  });
+    mode: room.mode === "hidden" ? "revealed" : "hidden",
+  };
+  if (updatedRoom.mode === "hidden") { // remove estimates
+    updatedRoom.members = room.members.map(({ estimate: _, ...m }) => m);
+  }
 
-  return updated;
+  rooms.set(room.id, updatedRoom);
+  sendRoomUpdate(updatedRoom);
+  return updatedRoom;
 }

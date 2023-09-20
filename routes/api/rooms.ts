@@ -1,30 +1,20 @@
 import { Handlers } from "$fresh/server.ts";
-import { customAlphabet } from "https://deno.land/x/nanoid@v3.0.0/mod.ts";
 
-import { getUserByToken, setRoomData } from "../../utils/db.ts";
-import { CtxState, RoomData } from "../../utils/types.ts";
-
-const createRoomId = customAlphabet("0123456789ABCDEF", 8);
+import { getUserByToken } from "../../utils/db.ts";
+import { CtxState } from "../../utils/types.ts";
+import { createRoom } from "../../controllers/room.ts";
 
 export const handler: Handlers<never, CtxState> = {
   POST: async (_, ctx) => {
-    const token = ctx.state.userToken;
+    const userToken = ctx.state.userToken;
 
-    const adminUser = token ? await getUserByToken({ token }) : null;
+    const adminUser = userToken ? await getUserByToken({ userToken }) : null;
     if (!adminUser) {
       return new Response("Unauthorized", { status: 401 });
     }
 
-    const room: RoomData = {
-      id: createRoomId(),
-      adminId: adminUser.id,
-      userIds: [adminUser.id],
-      estimates: {},
-      state: "estimating",
-    };
-
-    const created = await setRoomData(room);
-    if (!created) {
+    const room = await createRoom({ adminUser });
+    if (!room) {
       return new Response("Could not create room", { status: 500 });
     }
 

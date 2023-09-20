@@ -1,15 +1,18 @@
 import { useEffect, useRef, useState } from "preact/hooks";
-import { Room } from "../utils/types.ts";
+import { Room, RoomState } from "../utils/types.ts";
 
 export default function PokerGame(
-  { initialRoom, isAdmin = false }: { initialRoom: Room; isAdmin?: boolean },
+  { room, isAdmin = false }: {
+    room: Room;
+    isAdmin?: boolean;
+  },
 ) {
   const socketRef = useRef<WebSocket | null>(null);
   const formRef = useRef<HTMLFormElement>(null);
 
-  const [room, setRoom] = useState<Room>(initialRoom);
+  const [roomState, setRoomState] = useState<RoomState | null>(null);
 
-  const isEstimating = room.state === "estimating";
+  const roomIsHidden = roomState?.mode === "hidden";
 
   useEffect(() => {
     const wsOrigin = origin.replace("http", "ws");
@@ -18,7 +21,8 @@ export default function PokerGame(
       `${wsOrigin}/api/ws?roomId=${room.id}`,
     );
     socket.addEventListener("message", (evt) => {
-      setRoom(JSON.parse(evt.data));
+      console.log("received update", evt.data);
+      setRoomState(JSON.parse(evt.data).room);
     });
 
     socketRef.current = socket;
@@ -45,15 +49,15 @@ export default function PokerGame(
   return (
     <div>
       Room #{room.id}
-      {room &&
+      {roomState &&
         (
           <>
             <ul>
-              {room.users.map((user) => (
+              {roomState.members.map((member) => (
                 <li>
-                  {user.name}
-                  {user.estimate &&
-                    `(${isEstimating ? "ready" : user.estimate})`}
+                  {member.name}
+                  {member.estimate &&
+                    `(${roomIsHidden ? "ready" : member.estimate})`}
                 </li>
               ))}
             </ul>
@@ -64,7 +68,7 @@ export default function PokerGame(
         <label>
           Estimate: <input type="number" name="estimate" />
         </label>
-        {isEstimating && (
+        {roomIsHidden && (
           <button type="submit">
             Send
           </button>
@@ -73,7 +77,7 @@ export default function PokerGame(
 
       {isAdmin && (
         <button onClick={handleToggleState}>
-          {isEstimating ? "Reveal" : "Reset"}
+          {roomIsHidden ? "Reveal" : "Reset"}
         </button>
       )}
     </div>

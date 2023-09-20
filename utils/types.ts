@@ -7,35 +7,37 @@ export interface User {
   name: string;
 }
 
-type RoomState = "estimating" | "viewing";
-
 export interface RoomMember extends User {
   estimate?: number;
-}
-
-export interface RoomData {
-  id: string;
-  adminId: string;
-  userIds: string[];
-  estimates: { [key: string]: number };
-
-  state: RoomState;
 }
 
 export interface Room {
   id: string;
   adminId: string;
-  users: RoomMember[];
-  state: RoomState;
 }
 
-export interface SyncMessage {
-  roomData: RoomData;
+export interface RoomState extends Room {
+  members: RoomMember[];
+  mode: "hidden" | "revealed";
 }
-
-export type UserMessage = {
+export type UserAction = {
   type: "estimate";
   estimate: number;
 } | {
-  type: "toggleState";
+  type: "toggle";
 };
+export interface RoomUpdateMessage {
+  room: RoomState;
+}
+
+export interface MembershipMessage {
+  type: "join" | "leave";
+  user: User;
+  roomId: string;
+}
+
+export interface UserActionMessage {
+  userId: string;
+  roomId: string;
+  action: UserAction;
+}

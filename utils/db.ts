@@ -1,21 +1,26 @@
-import { RoomData, User } from "./types.ts";
+import { Room, User } from "./types.ts";
 
 const kv = await Deno.openKv();
 
-export async function createUser(
-  { user, token }: { user: User; token: string },
+export async function setUser(
+  { user, userToken }: { user: User; userToken: string },
 ) {
   const result = await kv
     .atomic()
-    .set(["users_by_token", token], user)
+    .set(["users_by_token", userToken], user)
     .set(["users", user.id], user)
     .commit();
 
   return result.ok;
 }
 
-export async function getUserByToken({ token }: { token: string }) {
-  const user = await kv.get<User>(["users_by_token", token]);
+export async function getUserByToken({ userToken }: { userToken: string }) {
+  const user = await kv.get<User>(["users_by_token", userToken]);
+  return user.value;
+}
+
+export async function getUserById({ userId }: { userId: string }) {
+  const user = await kv.get<User>(["users", userId]);
   return user.value;
 }
 
@@ -27,17 +32,12 @@ export async function getUsersByIds({ userIds }: { userIds: string[] }) {
   return users;
 }
 
-export async function getRoomDataById({ roomId }: { roomId: string }) {
-  const { value: room } = await kv.get<RoomData>(["rooms", roomId]);
+export async function getRoomById({ roomId }: { roomId: string }) {
+  const { value: room } = await kv.get<Room>(["rooms", roomId]);
   return room;
 }
 
-export async function setRoomData(room: RoomData): Promise<boolean> {
+export async function setRoom(room: Room): Promise<boolean> {
   const { ok } = await kv.set(["rooms", room.id], room);
-
-  if (ok) {
-    const bc = new BroadcastChannel("sync");
-    bc.postMessage({ roomData: room });
-  }
   return ok;
 }

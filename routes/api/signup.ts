@@ -2,29 +2,24 @@ import { Handlers } from "$fresh/server.ts";
 import { setCookie } from "$std/http/cookie.ts";
 import { nanoid } from "https://deno.land/x/nanoid@v3.0.0/mod.ts";
 
-import { createUser } from "../../utils/db.ts";
-import { addUser } from "../../controllers/room.ts";
+import { setUser } from "../../utils/db.ts";
 
 export const handler: Handlers = {
   POST: async (req) => {
     const formData = await req.formData();
     const username = formData.get("username")?.toString();
-    const roomId = formData.get("roomId")?.toString();
+    const roomId = (new URL(req.url)).searchParams.get("roomId");
 
     if (!username) {
       return new Response("No username provided", { status: 400 });
     }
 
     const user = { id: nanoid(), name: username.toString() };
-    const token = nanoid();
+    const userToken = nanoid();
 
-    const created = await createUser({ user, token });
+    const created = await setUser({ user, userToken });
     if (!created) {
       return new Response("Could not create user", { status: 500 });
-    }
-
-    if (roomId) {
-      await addUser({ userId: user.id, roomId: roomId });
     }
 
     const res = new Response("Redirecting", {
@@ -34,7 +29,7 @@ export const handler: Handlers = {
 
     setCookie(res.headers, {
       name: "ut",
-      value: token,
+      value: userToken,
       path: "/",
       httpOnly: true,
     });
