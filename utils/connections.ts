@@ -12,14 +12,10 @@ interface ConnectionRecord {
   lastAlive: number;
 }
 
-interface TerminationTask {
-  userId: string;
-  timeoutId: number;
-}
-
 const TERMINATION_TIMEOUT = 3000;
 
-const terminationQueue: TerminationTask[] = [];
+// maps userIds of connections slated for removal to timeoutIds
+const terminationTasks: Map<string, number> = new Map();
 
 type AddConnection = (
   params: { user: User; roomId: string },
@@ -49,8 +45,8 @@ export const addConnection: AddConnection = ({ user, roomId }) => (req) => {
   socket.addEventListener("message", createMessageRouter({ user, roomId }));
 
   socket.addEventListener("close", () => {
+    cancelSub();
     addTerminationTask(user.id, () => {
-      cancelSub();
       sendMemberRequest({ user, roomId, type: "leave" });
     });
   });
@@ -59,17 +55,16 @@ export const addConnection: AddConnection = ({ user, roomId }) => (req) => {
 };
 
 const addTerminationTask = (userId: string, cb: () => void) => {
-  terminationQueue.push({
-    userId,
-    timeoutId: setTimeout(() => {
-      cb();
-      terminationQueue.filter((tt) => tt.userId !== userId);
-    }, TERMINATION_TIMEOUT),
-  });
+  const timeoutId = setTimeout(() => {
+    cb();
+    terminationTasks.delete(userId);
+  }, TERMINATION_TIMEOUT);
+  terminationTasks.set(userId, timeoutId);
 };
 
 const removeTerminationTask = (userId: string) => {
-  clearTimeout(terminationQueue.find((tt) => tt.userId === userId)?.timeoutId);
+  clearTimeout(terminationTasks.get(userId));
+  terminationTasks.delete(userId);
 };
 
 const createMessageRouter =
