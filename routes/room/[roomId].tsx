@@ -1,8 +1,7 @@
 import { Handlers, PageProps } from "$fresh/server.ts";
 
-import { addMember, getOwnedRoom } from "../../controllers/room.ts";
 import PokerGame from "../../islands/PokerGame.tsx";
-import { getRoomById, getUserByToken } from "../../utils/db.ts";
+import { getRoomById } from "../../utils/db.ts";
 import { sendMemberRequest } from "../../utils/sync.ts";
 import { CtxState, Room, User } from "../../utils/types.ts";
 
@@ -17,8 +16,7 @@ export const handler: Handlers<RoomPageData, CtxState> = {
     const roomId = ctx.params["roomId"];
     const room = await getRoomById({ roomId });
 
-    const userToken = ctx.state.userToken;
-    const user = userToken ? await getUserByToken({ userToken }) : null;
+    const user = ctx.state.user;
 
     // no room record found in kv
     if (!room) {
@@ -39,19 +37,13 @@ export default function Room({ data }: PageProps<RoomPageData>) {
 
   return (
     <div class="max-w-xl mx-auto grid gap-8">
-      <header class="px-4 py-8 mx-auto bg-[#decade]">
-        <h1 class="text-4xl font-bold">kv or whatever</h1>
-      </header>
+      {!room && <NoRoom />}
 
-      <main>
-        {!room && <NoRoom />}
+      {room && !user && <NoUser room={room} />}
 
-        {room && !user && <NoUser room={room} />}
-
-        {room && user && (
-          <PokerGame room={room} isAdmin={user.id === room.adminId} />
-        )}
-      </main>
+      {room && user && (
+        <PokerGame room={room} isAdmin={user.id === room.adminId} />
+      )}
     </div>
   );
 }

@@ -1,5 +1,5 @@
 export interface CtxState {
-  userToken: string | null;
+  user: User | null;
 }
 
 export interface User {

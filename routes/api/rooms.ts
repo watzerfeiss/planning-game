@@ -1,14 +1,12 @@
 import { Handlers } from "$fresh/server.ts";
 
-import { getUserByToken } from "../../utils/db.ts";
 import { CtxState } from "../../utils/types.ts";
 import { createRoom } from "../../controllers/room.ts";
 
 export const handler: Handlers<never, CtxState> = {
   POST: async (_, ctx) => {
-    const userToken = ctx.state.userToken;
+    const adminUser = ctx.state.user;
 
-    const adminUser = userToken ? await getUserByToken({ userToken }) : null;
     if (!adminUser) {
       return new Response("Unauthorized", { status: 401 });
     }
