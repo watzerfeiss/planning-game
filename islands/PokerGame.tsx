@@ -1,5 +1,7 @@
 import { useEffect, useRef, useState } from "preact/hooks";
 import { Room, RoomState } from "../utils/types.ts";
+import EstimateOptions from "../components/EstimateOptions.tsx";
+import { ESTIMATE_OPTIONS } from "../utils/constants.ts";
 
 export default function PokerGame(
   { room, isAdmin = false }: {
@@ -31,14 +33,7 @@ export default function PokerGame(
     };
   }, []);
 
-  const handleSendEstimate = (evt: Event) => {
-    evt.preventDefault();
-    const formData = new FormData(formRef.current || undefined);
-    const estimate = formData.get("estimate");
-    if (!estimate) {
-      return;
-    }
-
+  const handleSendEstimate = (estimate: number) => {
     socketRef.current?.send(JSON.stringify({ type: "estimate", estimate }));
   };
 
@@ -56,7 +51,7 @@ export default function PokerGame(
               {roomState.members.map((member) => (
                 <li>
                   {member.name}
-                  {member.estimate &&
+                  {member.estimate !== undefined &&
                     `(${roomIsHidden ? "ready" : member.estimate})`}
                 </li>
               ))}
@@ -64,16 +59,11 @@ export default function PokerGame(
           </>
         )}
 
-      <form onSubmit={handleSendEstimate} ref={formRef}>
-        <label>
-          Estimate: <input type="number" name="estimate" />
-        </label>
-        {roomIsHidden && (
-          <button type="submit">
-            Send
-          </button>
-        )}
-      </form>
+      <EstimateOptions
+        options={ESTIMATE_OPTIONS}
+        onSelect={handleSendEstimate}
+        disabled={!roomIsHidden}
+      />
 
       {isAdmin && (
         <button onClick={handleToggleMode}>
