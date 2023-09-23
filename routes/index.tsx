@@ -16,7 +16,6 @@ export function handler(
 export default function Home({ data }: PageProps<PageData>) {
   return (
     <div>
-      <h1>Planning poker i guess</h1>
       {!data?.user ? <NoUser /> : <WelcomeScreen user={data.user} />}
     </div>
   );
@@ -40,7 +39,6 @@ function NoUser() {
 function WelcomeScreen({ user }: { user: User }) {
   return (
     <>
-      <p>Welcome, {user.name}</p>
       <form action="/api/rooms" method="POST">
         <button type="submit">Create new room</button>
       </form>

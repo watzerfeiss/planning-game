@@ -36,7 +36,7 @@ export default function Room({ data }: PageProps<RoomPageData>) {
   const { room, user } = data;
 
   return (
-    <div class="max-w-xl mx-auto grid gap-8">
+    <div>
       {!room && <NoRoom />}
 
       {room && !user && <NoUser room={room} />}
