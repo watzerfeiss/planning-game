@@ -11,7 +11,7 @@ export default defineApp<CtxState>((req, ctx) => {
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>planning poker</title>
       </head>
-      <body class="text-[#222222] bg-[#f8f9fa] min-h-screen flex flex-col">
+      <body class="text-gray-800 bg-slate-50 min-h-screen flex flex-col">
         <header class="p-4 flex justify-between gap-1 bg-white shadow-sm">
           <a href="/">Planning poker</a>
           {user && (

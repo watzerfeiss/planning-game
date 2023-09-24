@@ -41,9 +41,7 @@ export default function Room({ data }: PageProps<RoomPageData>) {
 
       {room && !user && <NoUser room={room} />}
 
-      {room && user && (
-        <PokerGame room={room} isAdmin={user.id === room.adminId} />
-      )}
+      {room && user && <PokerGame room={room} user={user} />}
     </div>
   );
 }

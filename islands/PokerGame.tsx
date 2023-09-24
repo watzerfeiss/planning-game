@@ -1,20 +1,22 @@
 import { useEffect, useRef, useState } from "preact/hooks";
-import { Room, RoomState } from "../utils/types.ts";
+import { Room, RoomState, User } from "../utils/types.ts";
 import EstimateOptions from "../components/EstimateOptions.tsx";
 import { ESTIMATE_OPTIONS } from "../utils/constants.ts";
+import PokerTable from "../components/PokerTable.tsx";
+import GameDashboard from "../components/GameDashboard.tsx";
 
 export default function PokerGame(
-  { room, isAdmin = false }: {
+  { room, user }: {
     room: Room;
-    isAdmin?: boolean;
+    user: User;
   },
 ) {
   const socketRef = useRef<WebSocket | null>(null);
-  const formRef = useRef<HTMLFormElement>(null);
 
   const [roomState, setRoomState] = useState<RoomState | null>(null);
 
   const roomIsHidden = roomState?.mode === "hidden";
+  const isAdmin = room.adminId === user.id;
 
   useEffect(() => {
     const wsOrigin = origin.replace("http", "ws");
@@ -42,34 +44,43 @@ export default function PokerGame(
   };
 
   return (
-    <div>
-      Room #{room.id}
+    <div class="divide-y-2 divide-slate-100">
+      <h1 class="text-xl font-semibold">
+        <span class="text-gray-400">Room #</span>
+        {room.id}
+      </h1>
+
       {roomState &&
         (
-          <>
-            <ul>
-              {roomState.members.map((member) => (
-                <li>
-                  {member.name}
-                  {member.estimate !== undefined &&
-                    `(${roomIsHidden ? "ready" : member.estimate})`}
-                </li>
-              ))}
-            </ul>
-          </>
+          <section class="mt-2 pt-4">
+            <h2 class="mb-4 text-lg italic text-center">
+              {roomIsHidden ? "Poker table" : "The results are in"}
+            </h2>
+
+            <PokerTable members={roomState.members} isHidden={roomIsHidden} />
+            <GameDashboard
+              members={roomState.members}
+              isHidden={roomIsHidden}
+              isAdmin={isAdmin}
+              onToggle={handleToggleMode}
+            />
+          </section>
         )}
 
-      <EstimateOptions
-        options={ESTIMATE_OPTIONS}
-        onSelect={handleSendEstimate}
-        disabled={!roomIsHidden}
-      />
-
-      {isAdmin && (
-        <button onClick={handleToggleMode}>
-          {roomIsHidden ? "Reveal" : "Reset"}
-        </button>
-      )}
+      <section class="mt-8 pt-4">
+        <h2 class="mb-4 text-lg italic text-center">
+          {roomIsHidden || isAdmin
+            ? "Submit your estimate"
+            : "Wait for a new estimation to start"}
+        </h2>
+        <EstimateOptions
+          options={ESTIMATE_OPTIONS}
+          onSelect={handleSendEstimate}
+          disabled={!roomIsHidden}
+          userEstimate={roomState?.members.find((m) => m.id === user.id)
+            ?.estimate}
+        />
+      </section>
     </div>
   );
 }
