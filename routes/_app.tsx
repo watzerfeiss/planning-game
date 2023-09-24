@@ -31,7 +31,15 @@ export default defineApp<CtxState>((req, ctx) => {
           <ctx.Component />
         </main>
         <footer class="p-4 flex justify-between gap-1">
-          <span class="ml-auto text-sm text-gray-400">© watzerfeiss 2021</span>
+          <div class="ml-auto flex flex-col items-end">
+            <span class="text-sm text-gray-400">
+              © 2021 watzerfeiss
+            </span>
+            <span class="text-xs text-gray-400">
+              Site icon courtesy of Twemoji, © 2023 X Corp. (I guess) under
+              CC-BY-4.0
+            </span>
+          </div>
         </footer>
       </body>
     </html>

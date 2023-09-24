@@ -54,7 +54,7 @@ export default function PokerGame(
         (
           <section class="mt-2 pt-4">
             <h2 class="mb-4 text-lg italic text-center">
-              {roomIsHidden ? "Poker table" : "The results are in"}
+              {roomIsHidden ? "Game in progress" : "The results are in"}
             </h2>
 
             <PokerTable members={roomState.members} isHidden={roomIsHidden} />

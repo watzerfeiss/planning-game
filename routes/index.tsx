@@ -25,7 +25,7 @@ export default function Home({ data }: PageProps<PageData>) {
 function NoUser() {
   return (
     <div class="p-4 divide-y-2 divide-slate-100">
-      <h2 class="mb-4 text-xl font-semibold">Join planning poker</h2>
+      <h2 class="mb-4 text-xl font-semibold">Join Projection holdem</h2>
 
       <form
         action="/api/signup"
