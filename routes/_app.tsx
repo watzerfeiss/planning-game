@@ -9,11 +9,18 @@ export default defineApp<CtxState>((req, ctx) => {
       <head>
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>planning poker</title>
+        <title>Projection holdem</title>
       </head>
       <body class="text-gray-800 bg-slate-50 min-h-screen flex flex-col">
-        <header class="p-4 flex justify-between gap-1 bg-white shadow-sm">
-          <a href="/">Planning poker</a>
+        <header class="p-4 flex justify-between items-center gap-1 bg-white shadow-sm">
+          <div class="flex flex-col">
+            <a href="/" class="text-xl text-slate-600 font-semibold">
+              Projection holdem
+            </a>
+            <span class="text-xs text-slate-400">
+              cause "planning poker" is copyrighted or something idk
+            </span>
+          </div>
           {user && (
             <div>
               Logged in as <strong class="font-semibold">{user.name}</strong>

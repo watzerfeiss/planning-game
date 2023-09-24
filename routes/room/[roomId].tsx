@@ -1,4 +1,5 @@
 import { Handlers, PageProps } from "$fresh/server.ts";
+import { Button } from "../../components/Button.tsx";
 
 import PokerGame from "../../islands/PokerGame.tsx";
 import { getRoomById } from "../../utils/db.ts";
@@ -48,17 +49,27 @@ export default function Room({ data }: PageProps<RoomPageData>) {
 
 function NoUser({ room }: { room: Room }) {
   return (
-    <>
-      <h2>Join room #{room.id}</h2>
+    <div class="p-4 divide-y-2 divide-slate-100">
+      <h2 class="mb-4 text-xl font-semibold">Join room #{room.id}</h2>
 
-      <form action={`/api/signup?roomId=${room.id}`} method="POST">
-        <label>
-          Username
-          <input type="text" name="username" />
-        </label>
-        <button type="submit">Join</button>
+      <form
+        action={`/api/signup?roomId=${room.id}`}
+        method="POST"
+        class="pt-4"
+      >
+        <div class="flex items-end gap-1">
+          <label class="flex items-center gap-1">
+            User name:
+            <input
+              type="text"
+              name="username"
+              class="px-2 py-1 rounded border"
+            />
+          </label>
+          <Button type="submit">Log in</Button>
+        </div>
       </form>
-    </>
+    </div>
   );
 }
 
