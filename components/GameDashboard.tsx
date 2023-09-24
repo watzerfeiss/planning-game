@@ -1,4 +1,5 @@
 import { RoomMember } from "../utils/types.ts";
+import { Button } from "./Button.tsx";
 
 interface GameDashboardProps {
   members: RoomMember[];
@@ -18,12 +19,12 @@ export default function GameDashboard(
 
   return (
     <div class="max-w-2xl min-h-[8rem] p-4 flex flex-col justify-start items-center gap-2">
-      {isHidden ? (isAdmin && <button onClick={onToggle}>Reveal</button>) : (
+      {isHidden ? (isAdmin && <Button onClick={onToggle}>Reveal</Button>) : (
         <>
           <span class="text-xl font-semibold">
             <span class="text-gray-500">Average:</span> {average}
           </span>
-          {isAdmin && <button onClick={onToggle}>Start new estimate</button>}
+          {isAdmin && <Button onClick={onToggle}>Start new estimate</Button>}
         </>
       )}
     </div>

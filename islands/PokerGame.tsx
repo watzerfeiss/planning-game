@@ -69,9 +69,11 @@ export default function PokerGame(
 
       <section class="mt-8 pt-4">
         <h2 class="mb-4 text-lg italic text-center">
-          {roomIsHidden || isAdmin
+          {roomIsHidden
             ? "Submit your estimate"
-            : "Wait for a new estimation to start"}
+            : (isAdmin
+              ? "Start a new estimate"
+              : "Wait for a new estimation to start")}
         </h2>
         <EstimateOptions
           options={ESTIMATE_OPTIONS}

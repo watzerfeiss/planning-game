@@ -23,8 +23,8 @@ export default defineApp<CtxState>((req, ctx) => {
         <main class="flex-grow mx-auto px-4 py-8 max-w-2xl">
           <ctx.Component />
         </main>
-        <footer>
-          © watzerfeiss 2021
+        <footer class="p-4 flex justify-between gap-1">
+          <span class="ml-auto text-sm text-gray-400">© watzerfeiss 2021</span>
         </footer>
       </body>
     </html>
