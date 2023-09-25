@@ -1,9 +1,10 @@
-# Fresh project
+# Projection holdem
 
-Your new Fresh project is ready to go. You can follow the Fresh "Getting
-Started" guide here: https://fresh.deno.dev/docs/getting-started
+_I'll write my own planning poker, with blackjack & no signup required_
 
-### Usage
+Practice project to try out Deno Deploy instance sync
+
+### Installing & running
 
 Make sure to install Deno: https://deno.land/manual/getting_started/installation
 
