@@ -9,7 +9,7 @@ const createRoomId = customAlphabet("0123456789ABCDEF", 8);
 // created by users connected to this instance
 const rooms: Map<string, RoomState> = new Map();
 
-// should be 0 for connected users, greater if (re)join requests arrive out of order
+// should be 1 for connected users, greater if (re)join requests arrive out of order
 const joinCounters: Map<string, number> = new Map();
 
 // get the authoritative room state if this instance owns this room
@@ -30,7 +30,7 @@ export async function createRoom({ adminUser }: { adminUser: User }) {
     rooms.set(room.id, room);
 
     const key = `${room.id}:${adminUser.id}`;
-    joinCounters.set(key, joinCounters.get(key) || 0);
+    joinCounters.set(key, (joinCounters.get(key) || 0) + 1);
     console.log("join counters:", joinCounters);
   }
   return ok ? room : null;
@@ -52,7 +52,7 @@ export function addMember(
   }
 
   const key = `${roomId}:${user.id}`;
-  joinCounters.set(key, joinCounters.get(key) || 0);
+  joinCounters.set(key, (joinCounters.get(key) || 0) + 1);
   console.log("join counters:", joinCounters);
 
   return room;
@@ -69,7 +69,7 @@ export function removeMember(
   // decrement join counter
   console.log("removing user, join counters:", joinCounters);
   const joinCounter = (joinCounters.get(`${roomId}:${userId}`) || 0) - 1;
-  if (joinCounter < 0) {
+  if (joinCounter < 1) {
     const updatedRoom: RoomState = {
       ...room,
       members: room.members.filter((m) => (m.id !== userId)),
