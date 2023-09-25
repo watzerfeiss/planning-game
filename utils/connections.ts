@@ -9,7 +9,6 @@ import { User, UserAction } from "./types.ts";
 interface ConnectionRecord {
   socket: WebSocket;
   roomId: string;
-  lastAlive: number;
 }
 
 const TERMINATION_TIMEOUT = 3000;
@@ -24,11 +23,9 @@ type AddConnection = (
 // by user id
 const connections: Map<string, ConnectionRecord> = new Map();
 
-// TODO heartbeat
-
 export const addConnection: AddConnection = ({ user, roomId }) => (req) => {
   const { socket, response } = Deno.upgradeWebSocket(req);
-  connections.set(user.id, { socket, roomId, lastAlive: Date.now() });
+  connections.set(user.id, { socket, roomId });
 
   const cancelSub = subscribeToRoomUpdates(roomId, (room) => {
     console.log("sending room update to", user.name);
@@ -45,8 +42,10 @@ export const addConnection: AddConnection = ({ user, roomId }) => (req) => {
   socket.addEventListener("message", createMessageRouter({ user, roomId }));
 
   socket.addEventListener("close", () => {
+    console.log("adding termination task for", user.id, "in", roomId);
     cancelSub();
     addTerminationTask(user.id, () => {
+      console.log("executing termination task for", user.id, "in", roomId);
       sendMemberRequest({ user, roomId, type: "leave" });
     });
   });
@@ -63,6 +62,7 @@ const addTerminationTask = (userId: string, cb: () => void) => {
 };
 
 const removeTerminationTask = (userId: string) => {
+  console.log("removing termination task for", userId);
   clearTimeout(terminationTasks.get(userId));
   terminationTasks.delete(userId);
 };

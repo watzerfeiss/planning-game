@@ -90,6 +90,9 @@ userActions.in.addEventListener(
 );
 
 export const sendUserAction = (msg: UserActionMessage) => {
+  console.log(
+    `sending action ${msg.action.type} from ${msg.userId} for ${msg.roomId}`,
+  );
   userActions.out.postMessage(msg);
 };
 

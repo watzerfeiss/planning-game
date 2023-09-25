@@ -20,12 +20,10 @@ export default function PokerGame(
 
   useEffect(() => {
     const wsOrigin = origin.replace("http", "ws");
-    console.log(origin);
     const socket = new WebSocket(
       `${wsOrigin}/api/ws?roomId=${room.id}`,
     );
     socket.addEventListener("message", (evt) => {
-      console.log("received update", evt.data);
       setRoomState(JSON.parse(evt.data).room);
     });
 

@@ -11,7 +11,6 @@ const rooms: Map<string, RoomState> = new Map();
 
 // get the authoritative room state if this instance owns this room
 export function getOwnedRoom({ roomId }: { roomId: string }) {
-  console.log([...rooms]);
   return rooms.get(roomId) || null;
 }
 
