@@ -24,7 +24,7 @@ export const handler: Handlers<RoomPageData, CtxState> = {
     if (!room) {
       return ctx.render({ room, user }, { status: 404 });
     }
-    console.log(user, room);
+
     // otherwise, send join request
     if (user && room) {
       sendMemberRequest({ user, roomId, type: "join" });

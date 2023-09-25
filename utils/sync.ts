@@ -28,14 +28,11 @@ const subscribers: Map<string, Set<(room: RoomState) => void>> = new Map();
 updateRequests.in.addEventListener(
   "message",
   (evt: MessageEvent<{ roomId: string }>) => {
-    console.log(`got update request for ${evt.data.roomId}`);
     const room = getOwnedRoom({ roomId: evt.data.roomId });
     if (!room) {
-      console.log("couldn't find room to send update");
       return;
     }
 
-    console.log("found the room, sending update");
     sendRoomUpdate(room);
   },
 );
@@ -44,7 +41,6 @@ updateRequests.in.addEventListener(
 roomUpdates.in.addEventListener(
   "message",
   (evt: MessageEvent<RoomUpdateMessage>) => {
-    console.log(`received room update for ${evt.data.room.id}`);
     const { room } = evt.data;
     subscribers.get(room.id)?.forEach((cb) => cb(room));
   },
@@ -54,7 +50,6 @@ membershipRequests.in.addEventListener(
   "message",
   (evt: MessageEvent<MembershipMessage>) => {
     const { roomId, user, type } = evt.data;
-    console.log(`received request for ${user.name} to ${type} room ${roomId}`);
 
     const room = getOwnedRoom({ roomId });
     if (!room || !user) {
@@ -73,7 +68,6 @@ userActions.in.addEventListener(
   "message",
   (evt: MessageEvent<UserActionMessage>) => {
     const { userId, roomId, action } = evt.data;
-    console.log(`received user action from ${userId} for room ${roomId}`);
     const room = getOwnedRoom({ roomId });
     if (!room) {
       return;
@@ -90,19 +84,14 @@ userActions.in.addEventListener(
 );
 
 export const sendUserAction = (msg: UserActionMessage) => {
-  console.log(
-    `sending action ${msg.action.type} from ${msg.userId} for ${msg.roomId}`,
-  );
   userActions.out.postMessage(msg);
 };
 
 export const sendMemberRequest = (msg: MembershipMessage) => {
-  console.log("sending member request");
   membershipRequests.out.postMessage(msg);
 };
 
 export const sendRoomUpdate = (room: RoomState) => {
-  console.log("sending room update");
   roomUpdates.out.postMessage({ room });
 };
 

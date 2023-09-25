@@ -22,7 +22,6 @@ export const addConnection: AddConnection = ({ user, roomId }) => (req) => {
   connections.set(user.id, { socket, roomId });
 
   const cancelSub = subscribeToRoomUpdates(roomId, (room) => {
-    console.log("sending room update to", user.name);
     if (socket.readyState === WebSocket.OPEN) {
       socket.send(JSON.stringify({ room }));
     }
