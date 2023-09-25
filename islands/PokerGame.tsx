@@ -1,9 +1,12 @@
+import { IS_BROWSER } from "$fresh/runtime.ts";
 import { useEffect, useRef, useState } from "preact/hooks";
-import { Room, RoomState, User } from "../utils/types.ts";
+
+import CopyButton from "./CopyButton.tsx";
 import EstimateOptions from "../components/EstimateOptions.tsx";
-import { ESTIMATE_OPTIONS } from "../utils/constants.ts";
 import PokerTable from "../components/PokerTable.tsx";
 import GameDashboard from "../components/GameDashboard.tsx";
+import { Room, RoomState, User } from "../utils/types.ts";
+import { ESTIMATE_OPTIONS } from "../utils/constants.ts";
 
 export default function PokerGame(
   { room, user }: {
@@ -43,10 +46,18 @@ export default function PokerGame(
 
   return (
     <div class="divide-y-2 divide-slate-100">
-      <h1 class="text-xl font-semibold">
-        <span class="text-gray-400">Room #</span>
-        {room.id}
-      </h1>
+      <div class="flex justify-between items-center">
+        <h1 class="text-xl font-semibold">
+          <span class="text-gray-400">Room #</span>
+          {room.id}
+        </h1>
+
+        {IS_BROWSER && (
+          <CopyButton copyText={window.location?.href}>
+            Copy invitation link
+          </CopyButton>
+        )}
+      </div>
 
       {roomState &&
         (

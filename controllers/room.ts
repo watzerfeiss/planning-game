@@ -1,6 +1,6 @@
 import { customAlphabet } from "https://deno.land/x/nanoid@v3.0.0/mod.ts";
 import { setRoom } from "../utils/db.ts";
-import { RoomMember, RoomState, User } from "../utils/types.ts";
+import { RoomState, User } from "../utils/types.ts";
 import { sendRoomUpdate } from "../utils/sync.ts";
 
 const createRoomId = customAlphabet("0123456789ABCDEF", 8);
