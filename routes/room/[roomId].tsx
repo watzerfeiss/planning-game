@@ -1,6 +1,7 @@
 import { Handlers, PageProps } from "$fresh/server.ts";
-import { Button } from "../../components/Button.tsx";
+import { Head } from "$fresh/runtime.ts";
 
+import { Button } from "../../components/Button.tsx";
 import PokerGame from "../../islands/PokerGame.tsx";
 import { getRoomById } from "../../utils/db.ts";
 import { sendMemberRequest } from "../../utils/sync.ts";
@@ -37,13 +38,21 @@ export default function Room({ data }: PageProps<RoomPageData>) {
   const { room, user } = data;
 
   return (
-    <div>
-      {!room && <NoRoom />}
+    <>
+      {room && (
+        <Head>
+          <title>Room #{room.id} - Projection Holdem</title>
+        </Head>
+      )}
 
-      {room && !user && <NoUser room={room} />}
+      <div>
+        {!room && <NoRoom />}
 
-      {room && user && <PokerGame room={room} user={user} />}
-    </div>
+        {room && !user && <NoUser room={room} />}
+
+        {room && user && <PokerGame room={room} user={user} />}
+      </div>
+    </>
   );
 }
 
