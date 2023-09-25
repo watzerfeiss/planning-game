@@ -1,6 +1,6 @@
 import { customAlphabet } from "https://deno.land/x/nanoid@v3.0.0/mod.ts";
 import { setRoom } from "../utils/db.ts";
-import { RoomState, User } from "../utils/types.ts";
+import { RoomMember, RoomState, User } from "../utils/types.ts";
 import { sendRoomUpdate } from "../utils/sync.ts";
 
 const createRoomId = customAlphabet("0123456789ABCDEF", 8);
@@ -8,6 +8,9 @@ const createRoomId = customAlphabet("0123456789ABCDEF", 8);
 // authoritative room states
 // created by users connected to this instance
 const rooms: Map<string, RoomState> = new Map();
+
+// should be 0 for connected users, greater if (re)join requests arrive out of order
+const joinCounters: Map<string, number> = new Map();
 
 // get the authoritative room state if this instance owns this room
 export function getOwnedRoom({ roomId }: { roomId: string }) {
@@ -22,8 +25,14 @@ export async function createRoom({ adminUser }: { adminUser: User }) {
     mode: "hidden",
   };
 
-  rooms.set(room.id, room);
   const ok = await setRoom({ id: room.id, adminId: adminUser.id });
+  if (ok) {
+    rooms.set(room.id, room);
+
+    const key = `${room.id}:${adminUser.id}`;
+    joinCounters.set(key, joinCounters.get(key) || 0);
+    console.log("join counters:", joinCounters);
+  }
   return ok ? room : null;
 }
 
@@ -42,10 +51,13 @@ export function addMember(
     sendRoomUpdate(room);
   }
 
+  const key = `${roomId}:${user.id}`;
+  joinCounters.set(key, joinCounters.get(key) || 0);
+  console.log("join counters:", joinCounters);
+
   return room;
 }
 
-// TODO remove member
 export function removeMember(
   { userId, roomId }: { userId: string; roomId: string },
 ) {
@@ -54,14 +66,22 @@ export function removeMember(
     return null;
   }
 
-  const updatedRoom: RoomState = {
-    ...room,
-    members: room.members.filter((m) => m.id !== userId),
-  };
+  // decrement join counter
+  console.log("removing user, join counters:", joinCounters);
+  const joinCounter = (joinCounters.get(`${roomId}:${userId}`) || 0) - 1;
+  if (joinCounter < 0) {
+    const updatedRoom: RoomState = {
+      ...room,
+      members: room.members.filter((m) => (m.id !== userId)),
+    };
 
-  rooms.set(roomId, updatedRoom);
-  sendRoomUpdate(updatedRoom);
-  return updatedRoom;
+    rooms.set(roomId, updatedRoom);
+    sendRoomUpdate(updatedRoom);
+    return updatedRoom;
+  } else {
+    joinCounters.set(`${roomId}:${userId}`, joinCounter);
+    return room;
+  }
 }
 
 export function submitEstimate(
