@@ -7,6 +7,7 @@ import PokerTable from "../components/PokerTable.tsx";
 import GameDashboard from "../components/GameDashboard.tsx";
 import { Room, RoomState, User } from "../utils/types.ts";
 import { ESTIMATE_OPTIONS } from "../utils/constants.ts";
+import Spinner from "../components/Spinner.tsx";
 
 export default function PokerGame(
   { room, user }: {
@@ -59,39 +60,46 @@ export default function PokerGame(
         )}
       </div>
 
-      {roomState &&
-        (
-          <section class="mt-2 pt-4">
-            <h2 class="mb-4 text-lg italic text-center">
-              {roomIsHidden ? "Game in progress" : "The results are in"}
-            </h2>
+      {!roomState
+        ? (
+          <div class="mt-2 pt-4 grid place-items-center">
+            <Spinner label="Connecting to room..." />
+          </div>
+        )
+        : (
+          <>
+            <section class="mt-2 pt-4">
+              <h2 class="mb-4 text-lg italic text-center">
+                {roomIsHidden ? "Game in progress" : "The results are in"}
+              </h2>
 
-            <PokerTable members={roomState.members} isHidden={roomIsHidden} />
-            <GameDashboard
-              members={roomState.members}
-              isHidden={roomIsHidden}
-              isAdmin={isAdmin}
-              onToggle={handleToggleMode}
-            />
-          </section>
+              <PokerTable members={roomState.members} isHidden={roomIsHidden} />
+              <GameDashboard
+                members={roomState.members}
+                isHidden={roomIsHidden}
+                isAdmin={isAdmin}
+                onToggle={handleToggleMode}
+              />
+            </section>
+
+            <section class="mt-8 pt-4">
+              <h2 class="mb-4 text-lg italic text-center">
+                {roomIsHidden
+                  ? "Submit your estimate"
+                  : (isAdmin
+                    ? "Start a new estimate"
+                    : "Wait for a new estimation to start")}
+              </h2>
+              <EstimateOptions
+                options={ESTIMATE_OPTIONS}
+                onSelect={handleSendEstimate}
+                disabled={!roomIsHidden}
+                userEstimate={roomState?.members.find((m) => m.id === user.id)
+                  ?.estimate}
+              />
+            </section>
+          </>
         )}
-
-      <section class="mt-8 pt-4">
-        <h2 class="mb-4 text-lg italic text-center">
-          {roomIsHidden
-            ? "Submit your estimate"
-            : (isAdmin
-              ? "Start a new estimate"
-              : "Wait for a new estimation to start")}
-        </h2>
-        <EstimateOptions
-          options={ESTIMATE_OPTIONS}
-          onSelect={handleSendEstimate}
-          disabled={!roomIsHidden}
-          userEstimate={roomState?.members.find((m) => m.id === user.id)
-            ?.estimate}
-        />
-      </section>
     </div>
   );
 }
