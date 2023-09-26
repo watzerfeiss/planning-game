@@ -1,4 +1,5 @@
 import { defineApp } from "$fresh/src/server/defines.ts";
+import Spinner from "../components/Spinner.tsx";
 import { CtxState } from "../utils/types.ts";
 
 export default defineApp<CtxState>((req, ctx) => {
@@ -27,8 +28,10 @@ export default defineApp<CtxState>((req, ctx) => {
             </div>
           )}
         </header>
-        <main class="flex-grow mx-auto px-4 py-8 max-w-2xl">
-          <ctx.Component />
+        <main class="flex-grow px-4 py-8 flex justify-center">
+          <div class="flex-grow max-w-2xl">
+            <ctx.Component />
+          </div>
         </main>
         <footer class="p-4 flex justify-between gap-1">
           <div class="ml-auto flex flex-col items-end">

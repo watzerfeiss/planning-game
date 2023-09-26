@@ -58,7 +58,7 @@ export default function Room({ data }: PageProps<RoomPageData>) {
 
 function NoUser({ room }: { room: Room }) {
   return (
-    <div class="p-4 divide-y-2 divide-slate-100">
+    <div class="p-4 divide-y-2 divide-slate-100 grid place-items-center">
       <h2 class="mb-4 text-xl font-semibold">Join room #{room.id}</h2>
 
       <form

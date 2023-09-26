@@ -16,15 +16,15 @@ export function handler(
 
 export default function Home({ data }: PageProps<PageData>) {
   return (
-    <div>
+    <>
       {!data?.user ? <NoUser /> : <WelcomeScreen user={data.user} />}
-    </div>
+    </>
   );
 }
 
 function NoUser() {
   return (
-    <div class="p-4 divide-y-2 divide-slate-100">
+    <div class="p-4 divide-y-2 divide-slate-100 grid place-items-center">
       <h2 class="mb-4 text-xl font-semibold">Join Projection holdem</h2>
 
       <form
@@ -50,7 +50,7 @@ function NoUser() {
 
 function WelcomeScreen({ user }: { user: User }) {
   return (
-    <div class="p-4 divide-y-2 divide-slate-100">
+    <div class="p-4 divide-y-2 divide-slate-100 grid place-items-center">
       <form action="/api/rooms" method="POST">
         <Button type="submit">Create new room</Button>
       </form>
