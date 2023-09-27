@@ -31,15 +31,15 @@ function PokerCard({ member, isHidden }: PokerCardProps) {
   return (
     <li class="flex flex-col items-center gap-2 text-center w-[8rem]">
       <div
-        class={tx`w-16 h-24 p-1 bg-clip-content grid place-items-center rounded border-2 border-slate-600 text-slate-600
-              ${!isHidden && "bg-slate-200"}
+        class={tx`relative w-16 h-24 p-1 bg-clip-content grid place-items-center overflow-clip [overflow-clip-margin:content-box] rounded border-2 text-slate-600 bg-slate-100
+              ${!isHidden && "bg-slate-200 border-slate-600"}
               ${
           isHidden && hasEstimate &&
-          "bg-slate-500 overflow-clip relative before:(h-2 w-4 bg-slate-200 absolute top-0 left-0 origin-top-left rotate-[-135deg] translate-x-[23px] translate-y-[57px]) after:(absolute top-0 left-0 origin-top-left -rotate-45 h-2 w-8 bg-slate-200  translate-x-[22px] translate-y-14)"
+          "border-slate-600 before:(w-full h-full from-slate-400 to-slate-100 [background-image:linear-gradient(to_right,_var(--tw-gradient-from)_50%,_var(--tw-gradient-to)_50%)] bg-[length:4px] scale-[2] rotate-45) after:(content-['Г'] text-left text-slate-500 absolute w-10 h-10 left-1/2 top-1/2 pl-2 text-3xl [line-height:34px] font-black rounded-full border-4 border-slate-400 bg-slate-100 -translate-x-1/2 -translate-y-1/2 rotate-[225deg]"
         }
               ${
           isHidden && !hasEstimate &&
-          "border-dashed bg-slate-50"
+          "border-dashed bg-slate-50 border-slate-400"
         }`}
       >
         {!isHidden && member.estimate !== undefined && (
