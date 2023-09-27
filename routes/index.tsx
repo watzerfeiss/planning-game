@@ -54,17 +54,6 @@ function WelcomeScreen({ user }: { user: User }) {
       <form action="/api/rooms" method="POST">
         <Button type="submit">Create new room</Button>
       </form>
-
-      {
-        /* <form>
-        <h2>Join a room</h2>
-        <label>
-          Room #
-          <input type="text" />
-        </label>
-        <button type="submit">Join</button>
-      </form> */
-      }
     </div>
   );
 }
