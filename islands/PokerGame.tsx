@@ -1,7 +1,7 @@
 import { IS_BROWSER } from "$fresh/runtime.ts";
 import { useEffect, useRef, useState } from "preact/hooks";
 
-import CopyButton from "./CopyButton.tsx";
+import CopyButton from "../components/CopyButton.tsx";
 import EstimateOptions from "../components/EstimateOptions.tsx";
 import PokerTable from "../components/PokerTable.tsx";
 import GameDashboard from "../components/GameDashboard.tsx";

@@ -10,8 +10,7 @@ import * as $4 from "./routes/api/signup.ts";
 import * as $5 from "./routes/api/ws.ts";
 import * as $6 from "./routes/index.tsx";
 import * as $7 from "./routes/room/[roomId].tsx";
-import * as $$0 from "./islands/CopyButton.tsx";
-import * as $$1 from "./islands/PokerGame.tsx";
+import * as $$0 from "./islands/PokerGame.tsx";
 
 const manifest = {
   routes: {
@@ -25,8 +24,7 @@ const manifest = {
     "./routes/room/[roomId].tsx": $7,
   },
   islands: {
-    "./islands/CopyButton.tsx": $$0,
-    "./islands/PokerGame.tsx": $$1,
+    "./islands/PokerGame.tsx": $$0,
   },
   baseUrl: import.meta.url,
 };
