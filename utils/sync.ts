@@ -1,6 +1,7 @@
 import {
   addMember,
   getOwnedRoom,
+  getOwnedRoomIds,
   removeMember,
   submitEstimate,
   toggleRoom,
@@ -51,15 +52,20 @@ membershipRequests.in.addEventListener(
   (evt: MessageEvent<MembershipMessage>) => {
     const { roomId, user, type } = evt.data;
 
-    const room = getOwnedRoom({ roomId });
-    if (!room || !user) {
-      return;
-    }
+    switch (type) {
+      case "join":
+        addMember({ user, roomId });
+        break;
 
-    if (type === "join") {
-      addMember({ user, roomId });
-    } else if (type === "leave") {
-      removeMember({ userId: user.id, roomId });
+      case "leave":
+        if (roomId) {
+          removeMember({ userId: user.id, roomId });
+        } else {
+          for (const roomId of getOwnedRoomIds()) {
+            removeMember({ userId: user.id, roomId });
+          }
+        }
+        break;
     }
   },
 );

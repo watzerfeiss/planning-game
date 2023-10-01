@@ -17,6 +17,10 @@ export function getOwnedRoom({ roomId }: { roomId: string }) {
   return rooms.get(roomId) || null;
 }
 
+export function getOwnedRoomIds() {
+  return [...rooms.keys()];
+}
+
 export async function createRoom({ adminUser }: { adminUser: User }) {
   const room: RoomState = {
     id: createRoomId(),
