@@ -8,7 +8,19 @@ export async function setUser(
   const result = await kv
     .atomic()
     .set(["users_by_token", userToken], user)
-    .set(["users", user.id], user)
+    .set(["users", user.id], { user })
+    .set(["tokens_by_userId", user.id], userToken)
+    .commit();
+
+  return result.ok;
+}
+
+export async function deleteUser({ userId }: { userId: string }) {
+  const userToken = (await kv.get<string>(["tokens_by_userId", userId])).value;
+  const result = await kv
+    .atomic()
+    .delete(["users", userId]).delete(["users_by_token", userToken || ""])
+    .delete(["tokens_by_userId", userId])
     .commit();
 
   return result.ok;
