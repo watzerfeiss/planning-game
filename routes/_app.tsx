@@ -12,6 +12,7 @@ export default defineApp<CtxState>((req, ctx) => {
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>Projection holdem</title>
       </head>
+
       <body class="text-gray-800 bg-slate-50 min-h-screen flex flex-col">
         <header class="p-4 flex justify-between items-center gap-1 bg-white shadow-sm">
           <div class="flex flex-col">
@@ -23,16 +24,26 @@ export default defineApp<CtxState>((req, ctx) => {
             </span>
           </div>
           {user && (
-            <div>
-              Logged in as <strong class="font-semibold">{user.name}</strong>
+            <div class="divide-x flex gap-2">
+              <span>
+                Logged in as <strong class="font-semibold">{user.name}</strong>
+              </span>
+              <a
+                href="/api/logout"
+                class="pl-2 text-slate-400 underline hover:no-underline"
+              >
+                Log out
+              </a>
             </div>
           )}
         </header>
+
         <main class="flex-grow px-4 py-8 flex justify-center">
           <div class="flex-grow max-w-2xl">
             <ctx.Component />
           </div>
         </main>
+
         <footer class="p-4 flex justify-between gap-1">
           <div class="ml-auto flex flex-col items-end">
             <span class="text-sm text-gray-400">
