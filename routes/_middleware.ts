@@ -8,11 +8,11 @@ export async function handler(
   req: Request,
   ctx: MiddlewareHandlerContext<CtxState>,
 ) {
-  // const url = new URL(req.url);
-  // if (url.pathname === "") {
-  //   return await ctx.next();
-  // }
+  if (ctx.destination !== "route") {
+    return await ctx.next();
+  }
 
+  console.log(req.url);
   const cookies = getCookies(req.headers);
   const userToken = cookies.ut;
   if (userToken) {
