@@ -1,5 +1,4 @@
 import { defineApp } from "$fresh/src/server/defines.ts";
-import Spinner from "../components/Spinner.tsx";
 import { CtxState } from "../utils/types.ts";
 
 export default defineApp<CtxState>((req, ctx) => {
