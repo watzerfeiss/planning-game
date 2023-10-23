@@ -12,7 +12,6 @@ export async function handler(
     return await ctx.next();
   }
 
-  console.log(req.url);
   const cookies = getCookies(req.headers);
   const userToken = cookies.ut;
   if (userToken) {

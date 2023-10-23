@@ -19,6 +19,7 @@ const connections: Map<string, ConnectionRecord> = new Map();
 
 export const addConnection: AddConnection = ({ user, roomId }) => (req) => {
   const { socket, response } = Deno.upgradeWebSocket(req);
+  console.log("adding connection", user.id, roomId);
   connections.set(user.id, { socket, roomId });
 
   const cancelSub = subscribeToRoomUpdates(roomId, (room) => {
@@ -36,6 +37,7 @@ export const addConnection: AddConnection = ({ user, roomId }) => (req) => {
   socket.addEventListener("close", () => {
     cancelSub();
     sendMemberRequest({ user, roomId, type: "leave" });
+    console.log("removing connection", user.id, roomId);
   });
 
   return response;

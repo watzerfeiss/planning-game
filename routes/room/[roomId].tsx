@@ -1,5 +1,5 @@
-import { Handlers, PageProps } from "$fresh/server.ts";
 import { Head } from "$fresh/runtime.ts";
+import { Handlers, PageProps } from "$fresh/server.ts";
 
 import { Button } from "../../components/Button.tsx";
 import PokerGame from "../../islands/PokerGame.tsx";
@@ -27,6 +27,7 @@ export const handler: Handlers<RoomPageData, CtxState> = {
 
     // otherwise, send join request
     if (user && room) {
+      console.log("received room request", user.id, roomId);
       sendMemberRequest({ user, roomId, type: "join" });
     }
 

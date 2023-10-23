@@ -1,9 +1,12 @@
 import { customAlphabet } from "https://deno.land/x/nanoid@v3.0.0/mod.ts";
 import { setRoom } from "../utils/db.ts";
-import { RoomState, User } from "../utils/types.ts";
 import { sendRoomUpdate } from "../utils/sync.ts";
+import { RoomState, User } from "../utils/types.ts";
 
 const createRoomId = customAlphabet("0123456789ABCDEF", 8);
+const createJoinCounterKey = (
+  { roomId, userId }: { roomId: string; userId: string },
+): string => `${userId}:${roomId}`;
 
 // authoritative room states
 // created by users connected to this instance
@@ -28,10 +31,6 @@ export async function createRoom({ adminUser }: { adminUser: User }) {
   const ok = await setRoom({ id: room.id, adminId: adminUser.id });
   if (ok) {
     rooms.set(room.id, room);
-
-    const key = `${room.id}:${adminUser.id}`;
-    joinCounters.set(key, (joinCounters.get(key) || 0) + 1);
-    console.log("join counters:", joinCounters);
   }
   return ok ? room : null;
 }
@@ -48,13 +47,13 @@ export function addMember(
 
   if (!members.find((m) => m.id === user.id)) {
     members.push(user);
-    sendRoomUpdate(room);
   }
 
-  const key = `${roomId}:${user.id}`;
+  const key = createJoinCounterKey({ roomId, userId: user.id });
   joinCounters.set(key, (joinCounters.get(key) || 0) + 1);
-  console.log("join counters:", joinCounters);
+  console.log("adding member, new join counter:", key, joinCounters.get(key));
 
+  sendRoomUpdate(room);
   return room;
 }
 
@@ -67,9 +66,15 @@ export function removeMember(
   }
 
   // decrement join counter
-  console.log("removing user, join counters:", joinCounters);
-  const joinCounter = (joinCounters.get(`${roomId}:${userId}`) || 0) - 1;
-  if (joinCounter < 1) {
+  const key = createJoinCounterKey({ roomId, userId });
+  const updatedCounter = Math.max(
+    0,
+    (joinCounters.get(key) || 0) - 1,
+  );
+  joinCounters.set(key, updatedCounter);
+  console.log("removing member, new join counter:", key, joinCounters.get(key));
+
+  if (updatedCounter < 1) {
     const updatedRoom: RoomState = {
       ...room,
       members: room.members.filter((m) => (m.id !== userId)),
@@ -79,7 +84,6 @@ export function removeMember(
     sendRoomUpdate(updatedRoom);
     return updatedRoom;
   } else {
-    joinCounters.set(`${roomId}:${userId}`, joinCounter);
     return room;
   }
 }
