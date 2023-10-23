@@ -46,7 +46,7 @@ export default defineApp<CtxState>((req, ctx) => {
         <footer class="p-4 flex justify-between gap-1">
           <div class="ml-auto flex flex-col items-end">
             <span class="text-sm text-gray-400">
-              © 2021 watzerfeiss
+              © {new Date().getFullYear()} watzerfeiss
             </span>
             <span class="text-xs text-gray-400">
               Site icon courtesy of Twemoji, © 2023 X Corp. (I guess) under
