@@ -1,6 +1,6 @@
 import { tx } from "twind";
-import { RoomMember } from "../utils/types.ts";
 import { getLabel } from "../utils/helpers.ts";
+import { RoomMember } from "../utils/types.ts";
 
 interface PokerTableProps {
   members: RoomMember[];
@@ -29,7 +29,7 @@ function PokerCard({ member, isHidden }: PokerCardProps) {
   const hasEstimate = member.estimate !== undefined;
 
   return (
-    <li class="flex flex-col items-center gap-2 text-center w-[8rem]">
+    <li class="flex flex-col items-center gap-2 text-center w-[6rem]">
       <div
         class={tx`relative w-16 h-24 p-1 bg-clip-content grid place-items-center overflow-clip [overflow-clip-margin:content-box] rounded border-2 text-slate-600 bg-slate-100
               ${!isHidden && "bg-slate-200 border-slate-600"}

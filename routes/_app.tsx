@@ -22,7 +22,7 @@ export default defineApp<CtxState>((req, ctx) => {
             </span>
           </div>
           {user && (
-            <div>
+            <div class="text-right">
               Logged in as <strong class="font-semibold">{user.name}</strong>
             </div>
           )}
