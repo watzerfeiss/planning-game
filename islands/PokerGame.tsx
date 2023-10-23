@@ -3,11 +3,11 @@ import { useEffect, useRef, useState } from "preact/hooks";
 
 import CopyButton from "../components/CopyButton.tsx";
 import EstimateOptions from "../components/EstimateOptions.tsx";
-import PokerTable from "../components/PokerTable.tsx";
 import GameDashboard from "../components/GameDashboard.tsx";
-import { Room, RoomState, User } from "../utils/types.ts";
-import { ESTIMATE_OPTIONS } from "../utils/constants.ts";
+import PokerTable from "../components/PokerTable.tsx";
 import Spinner from "../components/Spinner.tsx";
+import { ESTIMATE_OPTIONS } from "../utils/constants.ts";
+import { Room, RoomState, User } from "../utils/types.ts";
 
 export default function PokerGame(
   { room, user }: {
@@ -82,7 +82,7 @@ export default function PokerGame(
               />
             </section>
 
-            <section class="mt-8 pt-4">
+            <section class="mt-2 pt-4">
               <h2 class="mb-4 text-lg italic text-center">
                 {roomIsHidden
                   ? "Submit your estimate"
