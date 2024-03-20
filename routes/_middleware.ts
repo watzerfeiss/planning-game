@@ -1,4 +1,4 @@
-import { MiddlewareHandlerContext } from "$fresh/server.ts";
+import { FreshContext } from "$fresh/server.ts";
 import { getCookies } from "$std/http/cookie.ts";
 import { getUserByToken } from "../utils/db.ts";
 
@@ -6,10 +6,20 @@ import { CtxState } from "../utils/types.ts";
 
 export async function handler(
   req: Request,
-  ctx: MiddlewareHandlerContext<CtxState>,
+  ctx: FreshContext<CtxState>,
 ) {
+  console.log("mw: received request", req.url);
+  const start = performance.now();
+
   if (ctx.destination !== "route") {
-    return await ctx.next();
+    const next = await ctx.next();
+    console.log(
+      "mw: request finished:",
+      performance.now() - start,
+      "ms",
+      req.url,
+    );
+    return next;
   }
 
   const cookies = getCookies(req.headers);
@@ -17,5 +27,13 @@ export async function handler(
   if (userToken) {
     ctx.state.user = await getUserByToken({ userToken });
   }
-  return await ctx.next();
+  const next = await ctx.next();
+  console.log(
+    "mw: request finished:",
+    performance.now() - start,
+    "ms",
+    req.url,
+  );
+
+  return next;
 }
