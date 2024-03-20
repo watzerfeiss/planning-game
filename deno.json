@@ -1,9 +1,9 @@
 {
   "lock": false,
   "tasks": {
-    "check": "deno fmt --unstable --check && deno lint && deno check **/*.ts && deno check **/*.tsx",
-    "start": "deno run --unstable -A --watch=static/,routes/ dev.ts",
-    "build": "deno run --unstable -A dev.ts build",
+    "check": "deno fmt --unstable-kv --unstable-broadcast-channel --check && deno lint && deno check **/*.ts && deno check **/*.tsx",
+    "start": "deno run --unstable-kv --unstable-broadcast-channel -A --watch=static/,routes/ dev.ts",
+    "build": "deno run --unstable-kv --unstable-broadcast-channel -A dev.ts build",
     "preview": "deno --unstable run -A main.ts",
     "update": "deno run -A -r https://fresh.deno.dev/update ."
   },
