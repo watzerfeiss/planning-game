@@ -1,4 +1,3 @@
-import { tx } from "twind";
 import { getLabel } from "../utils/helpers.ts";
 import { RoomMember } from "../utils/types.ts";
 
@@ -31,11 +30,13 @@ function PokerCard({ member, isHidden }: PokerCardProps) {
   return (
     <li class="flex flex-col items-center gap-2 text-center w-[6rem]">
       <div
-        class={tx`relative w-16 h-24 p-1 bg-clip-content grid place-items-center overflow-clip [overflow-clip-margin:content-box] rounded border-2 text-slate-600 bg-slate-100
+        class={`relative w-16 h-24 p-1 bg-clip-content grid place-items-center overflow-clip [overflow-clip-margin:content-box] rounded border-2 text-slate-600 bg-slate-100
               ${!isHidden && "bg-slate-200 border-slate-600"}
               ${
           isHidden && hasEstimate &&
-          "border-slate-600 before:(w-full h-full from-slate-400 to-slate-100 [background-image:linear-gradient(to_right,_var(--tw-gradient-from)_50%,_var(--tw-gradient-to)_50%)] bg-[length:4px] scale-[2] rotate-45) after:(content-['Г'] text-left text-slate-500 absolute w-10 h-10 left-1/2 top-1/2 pl-2 text-3xl [line-height:34px] font-black rounded-full border-4 border-slate-400 bg-slate-100 -translate-x-1/2 -translate-y-1/2 rotate-[225deg]"
+          `border-slate-600
+            before:w-full before:h-full before:from-slate-400 before:to-slate-100 before:[background-image:linear-gradient(to_right,_var(--tw-gradient-from)_50%,_var(--tw-gradient-to)_50%)] before:bg-[length:4px] before:scale-[2] before:rotate-45
+            after:content-['Г'] after:text-left after:text-slate-500 after:absolute after:w-10 after:h-10 after:left-1/2 after:top-1/2 after:pl-2 after:text-3xl after:[line-height:34px] after:font-black after:rounded-full after:border-4 after:border-slate-400 after:bg-slate-100 after:-translate-x-1/2 after:-translate-y-1/2 after:rotate-[225deg]`
         }
               ${
           isHidden && !hasEstimate &&

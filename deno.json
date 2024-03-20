@@ -1,5 +1,6 @@
 {
   "lock": false,
+  "nodeModulesDir": true,
   "tasks": {
     "check": "deno fmt --unstable-kv --unstable-broadcast-channel --check && deno lint && deno check **/*.ts && deno check **/*.tsx",
     "start": "deno run --unstable-kv --unstable-broadcast-channel -A --watch=static/,routes/ dev.ts",
@@ -15,8 +16,9 @@
     "preact-render-to-string": "https://esm.sh/*preact-render-to-string@6.2.1",
     "@preact/signals": "https://esm.sh/*@preact/signals@1.2.1",
     "@preact/signals-core": "https://esm.sh/*@preact/signals-core@1.5.0",
-    "twind": "https://esm.sh/@twind/core@1.1.3",
-    "twind/": "https://esm.sh/@twind/",
+    "tailwindcss": "npm:tailwindcss@3.4.1",
+    "tailwindcss/": "npm:/tailwindcss@3.4.1/",
+    "tailwindcss/plugin": "npm:/tailwindcss@3.4.1/plugin.js",
     "$std/": "https://deno.land/std@0.193.0/",
     "@twind/core": "https://esm.sh/@twind/core@1.1.3",
     "@twind/preset-tailwind": "https://esm.sh/@twind/preset-tailwind@1.1.4/",
