@@ -2,31 +2,32 @@
 // This file SHOULD be checked into source version control.
 // This file is automatically updated during development when running `dev.ts`.
 
-import * as $0 from "./routes/_404.tsx";
-import * as $1 from "./routes/_app.tsx";
-import * as $2 from "./routes/_middleware.ts";
-import * as $3 from "./routes/api/rooms.ts";
-import * as $4 from "./routes/api/signup.ts";
-import * as $5 from "./routes/api/ws.ts";
-import * as $6 from "./routes/index.tsx";
-import * as $7 from "./routes/room/[roomId].tsx";
-import * as $$0 from "./islands/PokerGame.tsx";
+import * as $_404 from "./routes/_404.tsx";
+import * as $_app from "./routes/_app.tsx";
+import * as $_middleware from "./routes/_middleware.ts";
+import * as $api_rooms from "./routes/api/rooms.ts";
+import * as $api_signup from "./routes/api/signup.ts";
+import * as $api_ws from "./routes/api/ws.ts";
+import * as $index from "./routes/index.tsx";
+import * as $room_roomId_ from "./routes/room/[roomId].tsx";
+import * as $PokerGame from "./islands/PokerGame.tsx";
+import { type Manifest } from "$fresh/server.ts";
 
 const manifest = {
   routes: {
-    "./routes/_404.tsx": $0,
-    "./routes/_app.tsx": $1,
-    "./routes/_middleware.ts": $2,
-    "./routes/api/rooms.ts": $3,
-    "./routes/api/signup.ts": $4,
-    "./routes/api/ws.ts": $5,
-    "./routes/index.tsx": $6,
-    "./routes/room/[roomId].tsx": $7,
+    "./routes/_404.tsx": $_404,
+    "./routes/_app.tsx": $_app,
+    "./routes/_middleware.ts": $_middleware,
+    "./routes/api/rooms.ts": $api_rooms,
+    "./routes/api/signup.ts": $api_signup,
+    "./routes/api/ws.ts": $api_ws,
+    "./routes/index.tsx": $index,
+    "./routes/room/[roomId].tsx": $room_roomId_,
   },
   islands: {
-    "./islands/PokerGame.tsx": $$0,
+    "./islands/PokerGame.tsx": $PokerGame,
   },
   baseUrl: import.meta.url,
-};
+} satisfies Manifest;
 
 export default manifest;
