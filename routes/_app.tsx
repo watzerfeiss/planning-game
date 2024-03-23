@@ -1,3 +1,4 @@
+import { asset } from "$fresh/runtime.ts";
 import { defineApp } from "$fresh/src/server/defines.ts";
 import { CtxState } from "../utils/types.ts";
 
@@ -9,6 +10,7 @@ export default defineApp<CtxState>((req, ctx) => {
       <head>
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <link rel="stylesheet" href={asset("/style.css")} />
         <title>Projection holdem</title>
       </head>
 

@@ -1,2 +1,7 @@
-// This file is just a hack to enable tailwind intellisense
-// the config is in ./twind.config.ts
+import { type Config } from "tailwindcss";
+
+export default {
+  content: [
+    "{routes,islands,components}/**/*.{ts,tsx}",
+  ],
+} satisfies Config;
