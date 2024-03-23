@@ -5,7 +5,7 @@ import { deleteUser } from "../../controllers/user.ts";
 import { sendMemberRequest } from "../../utils/sync.ts";
 import { CtxState } from "../../utils/types.ts";
 
-export const handler: Handlers<never, CtxState> = {
+export const handler: Handlers<void, CtxState> = {
   GET: async (_, ctx) => {
     const res = new Response("Redirecting", {
       headers: { "Location": "/" },

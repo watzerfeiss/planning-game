@@ -1,4 +1,4 @@
-import { HandlerContext, PageProps } from "$fresh/server.ts";
+import { FreshContext, PageProps } from "$fresh/server.ts";
 import { Button } from "../components/Button.tsx";
 import { CtxState, User } from "../utils/types.ts";
 
@@ -8,7 +8,7 @@ interface PageData {
 
 export function handler(
   req: Request,
-  ctx: HandlerContext<PageData, CtxState>,
+  ctx: FreshContext<CtxState>,
 ) {
   const user = ctx.state.user;
   return ctx.render({ user });
