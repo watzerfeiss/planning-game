@@ -32,16 +32,16 @@ function NoUser() {
         method="POST"
         class="pt-4"
       >
-        <div class="flex items-end gap-1">
-          <label class="flex items-center gap-1">
+        <div class="flex flex-wrap gap-2">
+          <label class="flex-grow flex flex-wrap items-center gap-1">
             User name:
             <input
               type="text"
               name="username"
-              class="px-2 py-1 rounded border"
+              class="flex-grow px-2 py-1 rounded border"
             />
           </label>
-          <Button type="submit">Log in</Button>
+          <Button class="flex-grow" type="submit">Log in</Button>
         </div>
       </form>
     </div>
