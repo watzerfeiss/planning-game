@@ -30,11 +30,15 @@ export interface RoomUpdateMessage {
   room: RoomState;
 }
 
-export interface MembershipMessage {
-  type: "join" | "leave";
+export type MembershipMessage = {
+  type: "join";
   user: User;
   roomId: string;
-}
+} | {
+  type: "leave";
+  user: User;
+  roomId?: string;
+};
 
 export interface UserActionMessage {
   userId: string;

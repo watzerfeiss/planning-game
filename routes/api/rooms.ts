@@ -1,9 +1,9 @@
 import { Handlers } from "$fresh/server.ts";
 
-import { CtxState } from "../../utils/types.ts";
 import { createRoom } from "../../controllers/room.ts";
+import { CtxState } from "../../utils/types.ts";
 
-export const handler: Handlers<never, CtxState> = {
+export const handler: Handlers<void, CtxState> = {
   POST: async (_, ctx) => {
     const adminUser = ctx.state.user;
 

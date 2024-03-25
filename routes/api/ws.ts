@@ -3,7 +3,7 @@ import { Handlers } from "$fresh/server.ts";
 import { addConnection } from "../../utils/connections.ts";
 import { CtxState } from "../../utils/types.ts";
 
-export const handler: Handlers<never, CtxState> = {
+export const handler: Handlers<void, CtxState> = {
   GET: (req, ctx) => {
     const upgrade = req.headers.get("upgrade");
     if (upgrade?.toLowerCase() !== "websocket") {
