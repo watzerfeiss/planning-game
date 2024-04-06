@@ -57,7 +57,7 @@ export function addMember(
   joinCounters.set(key, (joinCounters.get(key) || 0) + 1);
   console.log("adding member, new join counter:", key, joinCounters.get(key));
 
-  sendRoomUpdate(room);
+  sendRoomUpdate({ room });
   return room;
 }
 
@@ -85,7 +85,7 @@ export function removeMember(
     };
 
     rooms.set(roomId, updatedRoom);
-    sendRoomUpdate(updatedRoom);
+    sendRoomUpdate({ room: updatedRoom });
     return updatedRoom;
   } else {
     return room;
@@ -114,7 +114,7 @@ export function submitEstimate(
   };
 
   rooms.set(room.id, updatedRoom);
-  sendRoomUpdate(updatedRoom);
+  sendRoomUpdate({ room: updatedRoom });
   return updatedRoom;
 }
 
@@ -136,6 +136,6 @@ export function toggleRoom(
   }
 
   rooms.set(room.id, updatedRoom);
-  sendRoomUpdate(updatedRoom);
+  sendRoomUpdate({ room: updatedRoom });
   return updatedRoom;
 }

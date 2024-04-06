@@ -99,7 +99,7 @@ export const sendMemberRequest = (msg: MembershipMessage) => {
 };
 
 export const sendRoomUpdate = (
-  { room, requestId }: { room: RoomState; requestId: string },
+  { room, requestId }: { room: RoomState; requestId?: string },
 ) => {
   roomUpdates.out.postMessage({ room, requestId });
 };
