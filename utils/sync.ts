@@ -1,3 +1,4 @@
+import { nanoid } from "https://deno.land/x/nanoid@v3.0.0/nanoid.ts";
 import {
   addMember,
   getOwnedRoom,
@@ -28,13 +29,13 @@ const subscribers: Map<string, Set<(room: RoomState) => void>> = new Map();
 
 updateRequests.in.addEventListener(
   "message",
-  (evt: MessageEvent<{ roomId: string }>) => {
+  (evt: MessageEvent<{ roomId: string; requestId: string }>) => {
     const room = getOwnedRoom({ roomId: evt.data.roomId });
     if (!room) {
       return;
     }
 
-    sendRoomUpdate(room);
+    sendRoomUpdate({ room, requestId: evt.data.requestId });
   },
 );
 
@@ -97,12 +98,29 @@ export const sendMemberRequest = (msg: MembershipMessage) => {
   membershipRequests.out.postMessage(msg);
 };
 
-export const sendRoomUpdate = (room: RoomState) => {
-  roomUpdates.out.postMessage({ room });
+export const sendRoomUpdate = (
+  { room, requestId }: { room: RoomState; requestId: string },
+) => {
+  roomUpdates.out.postMessage({ room, requestId });
 };
 
 export const requestRoomUpdate = ({ roomId }: { roomId: string }) => {
-  updateRequests.out.postMessage({ roomId });
+  const requestId = nanoid();
+  updateRequests.out.postMessage({ requestId, roomId });
+  const claimTimeoutId = setTimeout(() => {
+    console.log("claiming");
+  }, 2000);
+
+  roomUpdates.in.addEventListener(
+    "message",
+    (evt: MessageEvent<{ requestId: string }>) => {
+      if (evt.data.requestId !== requestId) {
+        return;
+      }
+      clearTimeout(claimTimeoutId);
+    },
+    { once: true },
+  );
 };
 
 // returns cancel function
